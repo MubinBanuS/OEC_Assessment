@@ -1,67 +1,11 @@
-const api_url = "http://localhost:10010";
+import { apiRequest } from "./apiService";
+import { API_URL , ENDPOINTS } from "./apiConstants";
 
-export const startPlan = async () => {
-    const url = `${api_url}/Plan`;
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
-    });
-
-    if (!response.ok) throw new Error("Failed to create plan");
-
-    return await response.json();
-};
-
-export const addProcedureToPlan = async (planId, procedureId) => {
-    const url = `${api_url}/Plan/AddProcedureToPlan`;
-    var command = { planId: planId, procedureId: procedureId };
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(command),
-    });
-
-    if (!response.ok) throw new Error("Failed to create plan");
-
-    return true;
-};
-
-export const getProcedures = async () => {
-    const url = `${api_url}/Procedures`;
-    const response = await fetch(url, {
-        method: "GET",
-    });
-
-    if (!response.ok) throw new Error("Failed to get procedures");
-
-    return await response.json();
-};
-
-export const getPlanProcedures = async (planId) => {
-    const url = `${api_url}/PlanProcedure?$filter=planId eq ${planId}&$expand=procedure`;
-    const response = await fetch(url, {
-        method: "GET",
-    });
-
-    if (!response.ok) throw new Error("Failed to get plan procedures");
-
-    return await response.json();
-};
-
-export const getUsers = async () => {
-    const url = `${api_url}/Users`;
-    const response = await fetch(url, {
-        method: "GET",
-    });
-
-    if (!response.ok) throw new Error("Failed to get users");
-
-    return await response.json();
-};
+export const startPlan =  () => apiRequest(`${API_URL}${ENDPOINTS.START_PLAN}`, {method: "POST",body: {}});
+export const addProcedureToPlan = (planId, procedureId) => apiRequest(`${API_URL}${ENDPOINTS.ADD_PROCEDURE_TO_PLAN}`, {method: "POST", body: { planId, procedureId }});
+export const getProcedures = () => apiRequest(`${API_URL}${ENDPOINTS.PROCEDURES}`);
+export const getPlanProcedures = (planId) => apiRequest(`${API_URL}${ENDPOINTS.PLAN_PROCEDURES(planId)}`);
+export const getUsers = () => apiRequest(`${API_URL}${ENDPOINTS.USERS}`);
+export const addUserToPlanProcedure = (planId, procedureId, userId) => apiRequest(`${API_URL}${ENDPOINTS.ADD_USER_TO_PLAN_PROCEDURE}`, {method: "POST", body: { planId, procedureId , userId}});
+export const removeUserFromPlanProcedure = (planId, procedureId, userId) => apiRequest(`${API_URL}${ENDPOINTS.REMOVE_USER_FROM_PLAN_PROCEDURE}`, {method: "DELETE", body: { planId, procedureId , userId}});
+export const removeAllUsersFromPlanProcedure = (planId, procedureId) => apiRequest(`${API_URL}${ENDPOINTS.REMOVE_ALL_USERS_FROM_PLAN_PROCEDURE}`, {method: "DELETE", body: { planId, procedureId }});
